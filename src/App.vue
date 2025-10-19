@@ -34,16 +34,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import * as locales from "./locales";
-import { wrongAudio as wrongRes } from "./resources";
+import { wrongAudio } from "./resources";
 
-const wrongAudio = ref<HTMLAudioElement>();
 const letterContainer = ref<HTMLDivElement>();
 const alphabet = locales.da.letters;
 const currentLetter = ref<(typeof locales)["da"]["letters"][number]>();;
 
-wrongRes.then((module) => {
-    wrongAudio.value = module;
-});
 
 async function setup() {
     if (!letterContainer.value) throw new Error("letterContainer not set");
@@ -66,7 +62,7 @@ window.addEventListener("keydown", (ev) => {
     ) {
         setup();
     }else if (alphabet.some(x => x.letter.toLowerCase() === ev.key.toLowerCase())) {
-        wrongAudio.value?.play();
+        wrongAudio.play();
     }
 });
 </script>

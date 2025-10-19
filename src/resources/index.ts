@@ -1,5 +1,2 @@
-async function loadAudio(file: string) {
-    const module = await import(`./${file}.mp3`);
-    return new Audio(module.default);
-}
-export const wrongAudio = loadAudio('wrong');
+import wrongAudioFile from "./wrong.mp3?url";
+export const wrongAudio = new Audio(wrongAudioFile);;
