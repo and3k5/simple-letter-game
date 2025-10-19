@@ -5,47 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Letter Game</title>
-    <style>
-        #letterContainer {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-size: 80vmin;
-            font-family: sans-serif;
-            position:absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-        }
-
-        #letterContainer button {
-            width: 80vw;
-            height: 70vh;
-            font-size: 60vmin;
-            border: none;
-            background: #00ff00;
-            color: #000;
-            border-radius: 100px;
-            cursor: pointer;
-        }
-    </style>
-    <script type="importmap">
-        {
-            "imports": {
-                "espeak-ng": "https://cdn.jsdelivr.net/npm/espeak-ng@1.0.2/dist/espeak-ng.min.js"
-            }
-        }
-    </script>
 </head>
 
 <body>
-    <h1>Simple Letter Game</h1>
-    <div id="letterContainer">
-        <button id="startButton">Start</button>
-    </div>
-    <script type="module" src="./game.js"></script>
+    <div id="app"></div>
+    <script type="module" src="./src/index.ts"></script>
 </body>
 
 </html>
