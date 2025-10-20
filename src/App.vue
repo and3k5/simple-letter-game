@@ -26,13 +26,13 @@
 
 <style scoped>
 .nav-header {
-    background-color: #4caf50;
+    background-color: var(--topbar-bg);
     padding: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: var(--topbar-fg);
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 h1 {
@@ -41,8 +41,8 @@ h1 {
 }
 
 .back-button {
-    background-color: #fff;
-    color: #4caf50;
+    background-color: var(--topbar-fg);
+    color: var(--topbar-bg);
     padding: 0.5rem 1rem;
     border-radius: 4px;
     text-decoration: none;

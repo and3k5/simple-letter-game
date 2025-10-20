@@ -1,3 +1,25 @@
+:root {
+    color-scheme: light dark;
+
+    /* light theme (default) */
+    --fg: #111827;
+    --bg: #ffffff;
+    --topbar-bg: #f3f4f6;
+    --topbar-fg: var(--fg);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* dark theme */
+        --fg: #e5e7eb;
+        --bg: #0b1220;
+        --topbar-bg: #4caf50;
+        --topbar-fg: var(--fg);
+        --shadow-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
 body {
     margin: 0;
 }
