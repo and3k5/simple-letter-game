@@ -24,7 +24,8 @@ const i18n = createI18n({
             },
             nav: {
                 exitGame: "Exit game",
-                start: "Start game",
+                startRandom: "Random",
+                startAlphabetical: "Alphabetic",
             },
         },
         da: {
@@ -33,7 +34,8 @@ const i18n = createI18n({
             },
             nav: {
                 exitGame: "Afslut spil",
-                start: "Begynd spil",
+                startRandom: "Tilfældig",
+                startAlphabetical: "Alfabetisk",
             },
         },
     },

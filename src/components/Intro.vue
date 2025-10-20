@@ -1,12 +1,27 @@
 <template>
     <div id="introContainer">
         <RouterLink
-            :to="{ name: 'start-game', params: { locale: 'da' } }"
+            :to="{
+                name: 'start-game',
+                params: { locale: 'da', mode: 'random' },
+            }"
             custom
             v-slot="{ href, navigate }"
         >
             <a id="startButton" :href="href" @click="navigate">{{
-                $t("nav.start")
+                $t("nav.startRandom")
+            }}</a>
+        </RouterLink>
+        <RouterLink
+            :to="{
+                name: 'start-game',
+                params: { locale: 'da', mode: 'alphabetical' },
+            }"
+            custom
+            v-slot="{ href, navigate }"
+        >
+            <a id="startButton" :href="href" @click="navigate">{{
+                $t("nav.startAlphabetical")
             }}</a>
         </RouterLink>
     </div>
@@ -14,16 +29,14 @@
 
 <style scoped>
 #introContainer {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
     flex: 1;
     justify-content: center;
     align-items: center;
     font-family: sans-serif;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    padding: 15px;
 }
 
 #startButton {
@@ -35,6 +48,7 @@
     border-radius: 50px;
     cursor: pointer;
     text-decoration: none;
+    text-align: center;
 }
 </style>
 
