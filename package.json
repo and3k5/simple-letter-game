@@ -25,6 +25,7 @@
     "homepage": "https://github.com/and3k5/simple-letter-game#readme",
     "dependencies": {
         "@google-cloud/text-to-speech": "^5.8.0",
+        "@tsparticles/confetti": "^3.0.3",
         "espeak-ng": "^1.0.2",
         "pinia": "^3.0.3",
         "vue-i18n": "^11.1.12",

@@ -21,7 +21,8 @@ import { LocaleKey } from "@/locales/LocaleKey";
 import { useAlphabet } from "@/store";
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { wrongAudio } from "../resources";
+import { wrongAudio, partyAudio } from "../resources";
+import { confetti } from "@tsparticles/confetti";
 
 const props = defineProps<{
     locale: LocaleKey;
@@ -83,12 +84,26 @@ onBeforeUnmount(() => {
 });
 
 function handleCorrectLetter() {
-    router.replace({
-        name: "next",
-        params: {
-            locale: props.locale,
-        },
+    confetti({
+        particleCount: 200,
+        spread: 180,
+        origin: { y: 0.6 },
     });
+
+    if (!partyAudio.paused) {
+        partyAudio.currentTime = 0;
+    } else {
+        partyAudio.play();
+    }
+
+    setTimeout(() => {
+        router.replace({
+            name: "next",
+            params: {
+                locale: props.locale,
+            },
+        });
+    }, 1000);
 }
 
 function repeatSound() {
