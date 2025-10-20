@@ -15,10 +15,9 @@
 <style scoped>
 #introContainer {
     display: flex;
+    flex: 1;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    font-size: 50svh;
     font-family: sans-serif;
     position: absolute;
     top: 0;
@@ -29,7 +28,7 @@
 
 #startButton {
     padding: 50px;
-    font-size: 200px;
+    font-size: 70px;
     border: none;
     background: #00ff00;
     color: #000;
