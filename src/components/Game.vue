@@ -82,6 +82,34 @@ onBeforeUnmount(() => {
     unloadController.abort();
 });
 
+function handleCorrectLetter() {
+    router.replace({
+        name: "next",
+        params: {
+            locale: props.locale,
+        },
+    });
+}
+
+function repeatSound() {
+    if (!audioFile.value)
+        throw new Error("Tried to play audio that was not loaded");
+
+    if (!audioFile.value.paused) {
+        audioFile.value.currentTime = 0;
+    } else {
+        audioFile.value.play();
+    }
+}
+
+function handleWrongLetter() {
+    if (!wrongAudio.paused) {
+        wrongAudio.currentTime = 0;
+    } else {
+        wrongAudio.play();
+    }
+}
+
 window.addEventListener(
     "keydown",
     (ev) => {
@@ -90,27 +118,11 @@ window.addEventListener(
             (ev.key === currentLetter.value.letter.toLowerCase() ||
                 ev.key === currentLetter.value.letter.toUpperCase())
         ) {
-            router.replace({
-                name: "next",
-                params: {
-                    locale: props.locale,
-                },
-            });
+            handleCorrectLetter();
         } else if (alphabet.containsLetter(ev.key)) {
-            if (!wrongAudio.paused) {
-                wrongAudio.currentTime = 0;
-            } else {
-                wrongAudio.play();
-            }
+            handleWrongLetter();
         } else if (ev.code === "Space") {
-            if (!audioFile.value)
-                throw new Error("Tried to play audio that was not loaded");
-
-            if (!audioFile.value.paused) {
-                audioFile.value.currentTime = 0;
-            } else {
-                audioFile.value.play();
-            }
+            repeatSound();
         }
     },
     {
