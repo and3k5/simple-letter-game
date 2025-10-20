@@ -1,6 +1,8 @@
-const alphabet = "abcdefghijklmnopqrstuvwxyzæøå"
+const alphabet = "abcdefghijklmnopqrstuvwxyzæøå";
 
-export const letters = alphabet.split('').map(letter => ({
+export const letters = alphabet.split("").map((letter) => ({
     letter: letter,
-    file: import(`./files/${letter}.mp3`),
+    getFile() {
+        return import(`./files/${letter}.mp3`).then((x) => x.default);
+    },
 }));

@@ -1,68 +1,45 @@
 <template>
-    <div id="letterContainer" ref="letterContainer">
-        <button id="startButton" type="button" @click="setup()">Start</button>
-    </div>
+    <header class="nav-header">
+        <h1>Simple Letter Game</h1>
+        <RouterLink v-if="route.name === 'game'" to="/" class="back-button">
+            Exit Game
+        </RouterLink>
+    </header>
+    <RouterView></RouterView>
 </template>
 
 <style scoped>
-#letterContainer {
+.nav-header {
+    background-color: #4caf50;
+    padding: 1rem;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    height: 100vh;
-    font-size: 50svh;
-    font-family: sans-serif;
-    position:absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-#letterContainer button {
-    padding:50px;
-    font-size: 200px;
-    border: none;
-    background: #00ff00;
-    color: #000;
-    border-radius: 50px;
-    cursor: pointer;
+h1 {
+    margin: 0;
+    font-size: 1.5rem;
 }
-        
+
+.back-button {
+    background-color: #fff;
+    color: #4caf50;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #f0f0f0;
+}
 </style>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import * as locales from "./locales";
-import { wrongAudio } from "./resources";
-
-const letterContainer = ref<HTMLDivElement>();
-const alphabet = locales.da.letters;
-const currentLetter = ref<(typeof locales)["da"]["letters"][number]>();;
-
-
-async function setup() {
-    if (!letterContainer.value) throw new Error("letterContainer not set");
-    const alphabetLength = alphabet.length;
-    currentLetter.value =
-        alphabet[Math.floor(Math.random() * alphabetLength)];
-    letterContainer.value.textContent =
-        currentLetter.value.letter.toUpperCase() + " " + currentLetter.value.letter.toLowerCase();
-    
-    const file = (await currentLetter.value.file).default;
-    const audio = new Audio(file);
-    audio.play();
-}
-
-window.addEventListener("keydown", (ev) => {
-    if (
-        currentLetter.value &&
-        (ev.key === currentLetter.value.letter.toLowerCase() ||
-        ev.key === currentLetter.value.letter.toUpperCase())
-    ) {
-        setup();
-    }else if (alphabet.some(x => x.letter.toLowerCase() === ev.key.toLowerCase())) {
-        wrongAudio.play();
-    }
-});
+import { RouterLink, RouterView, useRoute } from "vue-router";
+const route = useRoute();
 </script>
