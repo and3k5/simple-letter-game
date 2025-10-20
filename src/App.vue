@@ -1,8 +1,8 @@
 <template>
     <header class="nav-header">
-        <h1>Simple Letter Game</h1>
+        <h1>{{ $t("general.title") }}</h1>
         <RouterLink v-if="route.name === 'game'" to="/" class="back-button">
-            Exit Game
+            {{ $t("nav.exitGame") }}
         </RouterLink>
     </header>
     <RouterView></RouterView>

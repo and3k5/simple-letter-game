@@ -5,7 +5,9 @@
             custom
             v-slot="{ href, navigate }"
         >
-            <a id="startButton" :href="href" @click="navigate">Start</a>
+            <a id="startButton" :href="href" @click="navigate">{{
+                $t("nav.start")
+            }}</a>
         </RouterLink>
     </div>
 </template>
