@@ -21,7 +21,7 @@ import { LocaleKey } from "@/locales/LocaleKey";
 import { useAlphabet } from "@/store";
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { wrongAudio, partyAudio } from "../resources";
+import { wrongAudio, partyAudio, fartAudio } from "../resources";
 import { confetti } from "@tsparticles/confetti";
 
 const props = defineProps<{
@@ -84,16 +84,45 @@ onBeforeUnmount(() => {
 });
 
 function handleCorrectLetter() {
-    confetti({
-        particleCount: 200,
-        spread: 180,
-        origin: { y: 0.6 },
-    });
+    switch (Math.round(Math.random() * 1)) {
+        case 0:
+            {
+                confetti({
+                    particleCount: 200,
+                    spread: 180,
+                    origin: { y: 0.6 },
+                });
 
-    if (!partyAudio.paused) {
-        partyAudio.currentTime = 0;
-    } else {
-        partyAudio.play();
+                if (!partyAudio.paused) {
+                    partyAudio.currentTime = 0;
+                } else {
+                    partyAudio.play();
+                }
+            }
+            break;
+        case 1:
+            {
+                confetti({
+                    particleCount: 400,
+                    spread: 90,
+                    angle: 0,
+                    startVelocity: 105,
+                    origin: { x: 0 },
+                    shapes: ["emoji"],
+                    shapeOptions: {
+                        emoji: {
+                            value: ["💨", "💩", "🧻"],
+                        },
+                    },
+                });
+
+                if (!fartAudio.paused) {
+                    fartAudio.currentTime = 0;
+                } else {
+                    fartAudio.play();
+                }
+            }
+            break;
     }
 
     setTimeout(() => {
