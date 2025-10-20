@@ -1,8 +1,24 @@
 <template>
     <header class="nav-header">
         <h1>{{ $t("general.title") }}</h1>
-        <RouterLink v-if="route.name === 'game'" to="/" class="back-button">
-            {{ $t("nav.exitGame") }}
+        <RouterLink
+            custom
+            :to="{ name: 'intro' }"
+            class="back-button"
+            v-slot="{ href, navigate, isActive }"
+        >
+            <a
+                class="back-button"
+                :href="
+                    isActive || route.name !== 'game'
+                        ? 'javascript:void(0)'
+                        : href
+                "
+                @click="navigate"
+                :aria-disabled="isActive || route.name !== 'game'"
+            >
+                {{ $t("nav.exitGame") }}
+            </a>
         </RouterLink>
     </header>
     <RouterView></RouterView>
@@ -32,6 +48,12 @@ h1 {
     text-decoration: none;
     font-weight: bold;
     transition: background-color 0.3s;
+}
+
+.back-button:disabled,
+.back-button[aria-disabled="true"] {
+    opacity: 0.35;
+    pointer-events: none;
 }
 
 .back-button:hover {
