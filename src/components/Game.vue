@@ -2,7 +2,7 @@
     <Teleport to="body">
         <canvas id="fx-canvas" ref="fxCanvas"></canvas>
     </Teleport>
-    <div id="letterContainer">
+    <div id="letterContainer" :class="{ 'wrong': wrongIndicator, 'correct': correctIndicator }">
         {{ letter?.toUpperCase() }} {{ letter?.toLowerCase() }}
     </div>
 </template>
@@ -15,6 +15,14 @@
     align-items: center;
     font-size: 50svh;
     font-family: sans-serif;
+}
+
+.wrong {
+    color: rgb(199, 36, 36);
+}
+
+.correct {
+    color: rgb(34, 202, 70);
 }
 
 #fx-canvas {
@@ -36,6 +44,7 @@ import { useRouter } from "vue-router";
 import {
     wrongAudio,
     partyAudio,
+    correctAudio,
     fartAudio,
     createOmNomAudio,
     catOpen,
@@ -63,6 +72,8 @@ watch(
 const currentLetter = ref<LetterItem>();
 const router = useRouter();
 const audioFile = ref<HTMLAudioElement>();
+const correctIndicator = ref(false);
+const wrongIndicator = ref(false);
 
 watch(
     () => currentLetter.value,
@@ -115,6 +126,16 @@ async function wait(n: number) {
 const fxState = useEffectState();
 
 async function handleCorrectLetter() {
+    if (!correctAudio.paused) {
+        correctAudio.currentTime = 0;
+    } else {
+        correctAudio.play();
+    }
+    const durationCorrect = correctAudio.duration * 1000;
+    const waitPromise = wait(durationCorrect);
+    correctIndicator.value = true;
+    await waitPromise;
+    correctIndicator.value = false;
     switch ((fxState.counter += 1) % 3) {
         case 0:
             {
@@ -250,6 +271,14 @@ async function handleWrongLetter() {
 
     const duration = wrongAudio.duration * 1000;
     const waitingPromise = wait(duration);
+
+    wrongIndicator.value = true;
+    await wait(100);
+    wrongIndicator.value = false;
+    await wait(100);
+    wrongIndicator.value = true;
+    await wait(100);
+    wrongIndicator.value = false;
 
     await waitingPromise;
 }
