@@ -41,7 +41,7 @@
 
 #startButton {
     padding: 50px;
-    font-size: 70px;
+    font-size: 5vmin;
     border: none;
     background: #00ff00;
     color: #000;

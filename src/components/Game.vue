@@ -2,9 +2,18 @@
     <Teleport to="body">
         <canvas id="fx-canvas" ref="fxCanvas"></canvas>
     </Teleport>
-    <div id="letterContainer" :class="{ 'wrong': wrongIndicator, 'correct': correctIndicator }">
+    <div
+        id="letterContainer"
+        :class="{ wrong: wrongIndicator, correct: correctIndicator }"
+    >
         {{ letter?.toUpperCase() }} {{ letter?.toLowerCase() }}
     </div>
+    <input
+        type="text"
+        style="pointer-events: none; opacity: 0"
+        ref="virtKeybElem"
+        @focus="focusedVirtKeybElem"
+    />
 </template>
 
 <style lang="css" scoped>
@@ -13,7 +22,7 @@
     flex: 1;
     justify-content: center;
     align-items: center;
-    font-size: 50svh;
+    font-size: 40vmin;
     font-family: sans-serif;
 }
 
@@ -75,6 +84,7 @@ const router = useRouter();
 const audioFile = ref<HTMLAudioElement>();
 const correctIndicator = ref(false);
 const wrongIndicator = ref(false);
+const virtKeybElem = ref<HTMLInputElement>();
 
 watch(
     () => currentLetter.value,
@@ -141,7 +151,7 @@ async function handleCorrectLetter() {
     correctIndicator.value = true;
     await waitPromise;
 
-    switch ((fxState.counter++) % 3) {
+    switch (fxState.counter++ % 3) {
         case 0:
             {
                 confetti({
@@ -298,8 +308,7 @@ window.addEventListener(
             effectLock.value = true;
             try {
                 await handleCorrectLetter();
-            }
-            finally {
+            } finally {
                 effectLock.value = false;
             }
         } else if (alphabet.containsLetter(ev.key)) {
@@ -308,8 +317,7 @@ window.addEventListener(
             wrongLock.value = true;
             try {
                 await handleWrongLetter();
-            }
-            finally {
+            } finally {
                 wrongLock.value = false;
             }
         } else if (ev.code === "Space") {
@@ -321,6 +329,21 @@ window.addEventListener(
         signal: unloadController.signal,
     },
 );
+
+window.addEventListener(
+    "focus",
+    () => {
+        virtKeybElem.value?.focus();
+    },
+    {
+        passive: true,
+        signal: unloadController.signal,
+    },
+);
+
+function focusedVirtKeybElem() {
+    console.log("Focused virtual keyboard element");
+}
 
 const fxCanvas = ref<HTMLCanvasElement>();
 
