@@ -125,14 +125,18 @@ async function wait(n: number) {
 
 const fxState = useEffectState();
 
-async function handleCorrectLetter() {
-    if (!correctAudio.paused) {
-        correctAudio.currentTime = 0;
+async function playAndWait(audio: HTMLAudioElement) {
+    if (!audio.paused) {
+        audio.currentTime = 0;
     } else {
-        correctAudio.play();
+        audio.play();
     }
-    const durationCorrect = correctAudio.duration * 1000;
-    const waitPromise = wait(durationCorrect);
+    const duration = audio.duration * 1000;
+    await wait(duration);
+}
+
+async function handleCorrectLetter() {
+    const waitPromise = playAndWait(correctAudio);
     correctIndicator.value = true;
     await waitPromise;
 
@@ -145,13 +149,7 @@ async function handleCorrectLetter() {
                     origin: { y: 0.6 },
                 });
 
-                if (!partyAudio.paused) {
-                    partyAudio.currentTime = 0;
-                } else {
-                    partyAudio.play();
-                }
-                const duration = partyAudio.duration * 1000;
-                await wait(duration);
+                await playAndWait(partyAudio);
                 await wait(1500);
             }
             break;
@@ -171,13 +169,7 @@ async function handleCorrectLetter() {
                     },
                 });
 
-                if (!fartAudio.paused) {
-                    fartAudio.currentTime = 0;
-                } else {
-                    fartAudio.play();
-                }
-                const duration = fartAudio.duration * 1000;
-                await wait(duration);
+                await playAndWait(fartAudio);
                 await wait(1500);
             }
             break;
