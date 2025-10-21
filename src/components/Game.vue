@@ -49,6 +49,7 @@ import {
     createOmNomAudio,
     catOpen,
     catClosed,
+    noiceAudio,
 } from "../resources";
 import { confetti } from "@tsparticles/confetti";
 
@@ -150,7 +151,8 @@ async function handleCorrectLetter() {
                 });
 
                 await playAndWait(partyAudio);
-                await wait(1500);
+                await playAndWait(noiceAudio);
+                await wait(500);
             }
             break;
         case 1:
@@ -170,7 +172,8 @@ async function handleCorrectLetter() {
                 });
 
                 await playAndWait(fartAudio);
-                await wait(1500);
+                await playAndWait(noiceAudio);
+                await wait(500);
             }
             break;
         case 2:

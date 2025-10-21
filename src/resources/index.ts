@@ -4,6 +4,9 @@ export const wrongAudio = new Audio(wrongAudioFile);
 import correctAudioFile from "./correct.mp3?url";
 export const correctAudio = new Audio(correctAudioFile);
 
+import noiceAudioFile from "./noice.mp3?url";
+export const noiceAudio = new Audio(noiceAudioFile);
+
 import partyAudioFile from "./party.mp3?url";
 export const partyAudio = new Audio(partyAudioFile);
 
