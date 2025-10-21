@@ -241,15 +241,21 @@ function repeatSound() {
     }
 }
 
-function handleWrongLetter() {
+async function handleWrongLetter() {
     if (!wrongAudio.paused) {
         wrongAudio.currentTime = 0;
     } else {
         wrongAudio.play();
     }
+
+    const duration = wrongAudio.duration * 1000;
+    const waitingPromise = wait(duration);
+
+    await waitingPromise;
 }
 
 const effectLock = ref(false);
+const wrongLock = ref(false);
 
 window.addEventListener(
     "keydown",
@@ -269,7 +275,15 @@ window.addEventListener(
                 effectLock.value = false;
             }
         } else if (alphabet.containsLetter(ev.key)) {
-            handleWrongLetter();
+            //if (ev.repeat) return;
+            if (wrongLock.value) return;
+            wrongLock.value = true;
+            try {
+                await handleWrongLetter();
+            }
+            finally {
+                wrongLock.value = false;
+            }
         } else if (ev.code === "Space") {
             repeatSound();
         }
