@@ -222,7 +222,7 @@ async function handleCorrectLetter() {
             break;
     }
 
-    router.replace({
+    await router.replace({
         name: "next",
         params: {
             locale: props.locale,
@@ -249,15 +249,25 @@ function handleWrongLetter() {
     }
 }
 
+const effectLock = ref(false);
+
 window.addEventListener(
     "keydown",
-    (ev) => {
+    async (ev) => {
         if (
             currentLetter.value &&
             (ev.key === currentLetter.value.letter.toLowerCase() ||
                 ev.key === currentLetter.value.letter.toUpperCase())
         ) {
-            handleCorrectLetter();
+            if (ev.repeat) return;
+            if (effectLock.value) return;
+            effectLock.value = true;
+            try {
+                await handleCorrectLetter();
+            }
+            finally {
+                effectLock.value = false;
+            }
         } else if (alphabet.containsLetter(ev.key)) {
             handleWrongLetter();
         } else if (ev.code === "Space") {
