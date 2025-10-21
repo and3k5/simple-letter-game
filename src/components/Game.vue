@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { LetterItem } from "@/locales/LetterItem";
 import { LocaleKey } from "@/locales/LocaleKey";
-import { useAlphabet } from "@/store";
+import { useAlphabet, useEffectState } from "@/store";
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import {
@@ -112,8 +112,10 @@ async function wait(n: number) {
     return new Promise((resolve) => setTimeout(resolve, n));
 }
 
+const fxState = useEffectState();
+
 async function handleCorrectLetter() {
-    switch (Math.round(Math.random() * 2)) {
+    switch ((fxState.counter += 1) % 3) {
         case 0:
             {
                 confetti({

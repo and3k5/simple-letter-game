@@ -60,3 +60,11 @@ export const useAlphabet = defineStore("alphabet", () => {
         },
     };
 });
+
+export const useEffectState = defineStore("effectState", () => {
+    const counter = ref(0);
+
+    return {
+        counter,
+    };
+});
