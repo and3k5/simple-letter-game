@@ -135,7 +135,7 @@ async function handleCorrectLetter() {
     const waitPromise = wait(durationCorrect);
     correctIndicator.value = true;
     await waitPromise;
-    correctIndicator.value = false;
+
     switch ((fxState.counter += 1) % 3) {
         case 0:
             {
@@ -152,6 +152,7 @@ async function handleCorrectLetter() {
                 }
                 const duration = partyAudio.duration * 1000;
                 await wait(duration);
+                await wait(1500);
             }
             break;
         case 1:
@@ -177,6 +178,7 @@ async function handleCorrectLetter() {
                 }
                 const duration = fartAudio.duration * 1000;
                 await wait(duration);
+                await wait(1500);
             }
             break;
         case 2:
@@ -242,6 +244,8 @@ async function handleCorrectLetter() {
             }
             break;
     }
+
+    correctIndicator.value = false;
 
     await router.replace({
         name: "next",
