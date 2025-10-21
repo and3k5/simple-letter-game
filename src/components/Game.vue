@@ -16,6 +16,7 @@
     font-size: 50svh;
     font-family: sans-serif;
 }
+
 #fx-canvas {
     position: fixed;
     top: 0;
@@ -107,8 +108,11 @@ const images = [catOpen, catClosed].map((x) => {
     return img;
 });
 
-function handleCorrectLetter() {
-    let waitTime = 1000;
+async function wait(n: number) {
+    return new Promise((resolve) => setTimeout(resolve, n));
+}
+
+async function handleCorrectLetter() {
     switch (Math.round(Math.random() * 2)) {
         case 0:
             {
@@ -123,12 +127,14 @@ function handleCorrectLetter() {
                 } else {
                     partyAudio.play();
                 }
+                const duration = partyAudio.duration * 1000;
+                await wait(duration);
             }
             break;
         case 1:
             {
                 confetti({
-                    particleCount: 400,
+                    particleCount: 200,
                     spread: 90,
                     angle: 0,
                     startVelocity: 105,
@@ -146,6 +152,8 @@ function handleCorrectLetter() {
                 } else {
                     fartAudio.play();
                 }
+                const duration = fartAudio.duration * 1000;
+                await wait(duration);
             }
             break;
         case 2:
@@ -174,6 +182,13 @@ function handleCorrectLetter() {
                 audioPanNode.connect(audioContext.destination);
                 audioPanNode.pan.value = -1;
 
+                const ctrl = new AbortController();
+                const runPromise = new Promise<void>((resolve) => {
+                    ctrl.signal.addEventListener("abort", () => {
+                        resolve();
+                    });
+                });
+
                 function drawImage(n: number) {
                     const currentImageIndex =
                         Math.ceil(n / 100) % images.length;
@@ -195,29 +210,22 @@ function handleCorrectLetter() {
                         requestAnimationFrame(drawImage);
                     } else {
                         omnomAudio.pause();
+                        ctrl.abort();
                     }
                 }
-                waitTime = 2200;
+
                 requestAnimationFrame(drawImage);
-
-                // Crossfade/pan the sound as the cat is moving towards the screen
-
-                // onBeforeUnmount(() => {
-                //     clearInterval(animationInterval);
-                //     clearInterval(panAnimation);
-                // });
+                await runPromise;
             }
             break;
     }
 
-    setTimeout(() => {
-        router.replace({
-            name: "next",
-            params: {
-                locale: props.locale,
-            },
-        });
-    }, waitTime);
+    router.replace({
+        name: "next",
+        params: {
+            locale: props.locale,
+        },
+    });
 }
 
 function repeatSound() {
