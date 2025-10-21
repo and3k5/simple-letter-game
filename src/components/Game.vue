@@ -140,7 +140,7 @@ async function handleCorrectLetter() {
     correctIndicator.value = true;
     await waitPromise;
 
-    switch ((fxState.counter += 1) % 3) {
+    switch ((fxState.counter++) % 3) {
         case 0:
             {
                 confetti({
