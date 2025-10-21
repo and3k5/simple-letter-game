@@ -341,6 +341,17 @@ window.addEventListener(
     },
 );
 
+window.addEventListener(
+    "click",
+    () => {
+        virtKeybElem.value?.focus();
+    },
+    {
+        passive: true,
+        signal: unloadController.signal,
+    },
+);
+
 function focusedVirtKeybElem() {
     console.log("Focused virtual keyboard element");
 }
