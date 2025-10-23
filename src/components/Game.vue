@@ -61,10 +61,12 @@ import {
     noiceAudio,
 } from "../resources";
 import { confetti } from "@tsparticles/confetti";
+import { type HookHelper } from "@/utils/hook-helper";
 
 const props = defineProps<{
     locale: LocaleKey;
     letter: string;
+    hook?: HookHelper | undefined;
 }>();
 
 const alphabet = useAlphabet();
@@ -95,21 +97,60 @@ watch(
     },
 );
 
+async function loadLetterSound(letter: LetterItem) {
+    const file = await letter.getFile();
+    const cancel = new AbortController();
+    return new Promise<HTMLAudioElement>((res, rej) => {
+        const audio = new Audio();
+        audio.addEventListener(
+            "canplay",
+            () => {
+                cancel.abort();
+                res(audio);
+            },
+            {
+                once: true,
+                signal: cancel.signal,
+            },
+        );
+
+        audio.addEventListener(
+            "error",
+            (event) => {
+                cancel.abort();
+                if (event.error) {
+                    rej(event.error);
+                } else if (event.message) {
+                    rej(new Error("Error: " + event.message));
+                } else {
+                    console.error(event);
+                    rej(new Error("Unknown error"));
+                }
+            },
+            {
+                once: true,
+                signal: cancel.signal,
+            },
+        );
+        audio.src = file;
+    });
+}
+
 watch(
     () => props.letter,
     async (letter) => {
         currentLetter.value = alphabet.getLetterItem(letter);
-
-        const file = await currentLetter.value.getFile();
-        const audio = new Audio(file);
-        audioFile.value = audio;
         try {
+            const audio = await loadLetterSound(currentLetter.value);
+            audioFile.value = audio;
             await audio.play();
         } catch (e) {
             if (e instanceof Error && e.name === "NotAllowedError") {
                 // Do nothing. This is just because of autoplay policy
+                console.debug("Autoplay not allowed, ignoring");
             } else {
-                throw e;
+                console.error(e);
+                //throw e;
             }
         }
     },
@@ -134,6 +175,10 @@ async function wait(n: number) {
     return new Promise((resolve) => setTimeout(resolve, n));
 }
 
+const emit = defineEmits<{
+    (e: "guessed-letter"): void;
+}>();
+
 const fxState = useEffectState();
 
 async function playAndWait(audio: HTMLAudioElement) {
@@ -147,6 +192,8 @@ async function playAndWait(audio: HTMLAudioElement) {
 }
 
 async function handleCorrectLetter() {
+    props.hook?.set("handle correct letter");
+    emit("guessed-letter");
     const waitPromise = playAndWait(correctAudio);
     correctIndicator.value = true;
     await waitPromise;
@@ -272,6 +319,7 @@ function repeatSound() {
 }
 
 async function handleWrongLetter() {
+    props.hook?.set("handle wrong letter");
     if (!wrongAudio.paused) {
         wrongAudio.currentTime = 0;
     } else {
@@ -298,6 +346,7 @@ const wrongLock = ref(false);
 window.addEventListener(
     "keydown",
     async (ev) => {
+        props.hook?.set("keydown:" + ev.key);
         if (
             currentLetter.value &&
             (ev.key === currentLetter.value.letter.toLowerCase() ||
@@ -364,7 +413,10 @@ function resizeCanvas() {
     fxCanvas.value.height = window.innerHeight;
 }
 
+props.hook?.set("created");
+
 onMounted(() => {
+    props.hook?.set("mounted");
     resizeCanvas();
 });
 

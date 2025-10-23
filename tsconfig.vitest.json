@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.main.json",
+    "include": ["**/__tests__/**/*.ts"],
+    "exclude": [],
+    "compilerOptions": {
+        "moduleResolution": "nodenext",
+        "module": "nodenext"
+    }
+}
