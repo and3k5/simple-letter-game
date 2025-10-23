@@ -3,7 +3,7 @@
         <h1>{{ $t("general.title") }}</h1>
         <RouterLink
             custom
-            :to="{ name: 'intro' }"
+            :to="{ name: 'intro', query: $route.query }"
             class="back-button"
             v-slot="{ href, navigate, isActive }"
         >

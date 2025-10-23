@@ -6,7 +6,12 @@
         id="letterContainer"
         :class="{ wrong: wrongIndicator, correct: correctIndicator }"
     >
-        {{ letter?.toUpperCase() }} {{ letter?.toLowerCase() }}
+        <template v-if="letterMode != 'lower'">
+            {{ letter?.toUpperCase() }}
+        </template>
+        <template v-if="letterMode != 'upper'">
+            {{ letter?.toLowerCase() }}
+        </template>
     </div>
     <input
         type="text"
@@ -67,6 +72,7 @@ const props = defineProps<{
     locale: LocaleKey;
     letter: string;
     hook?: HookHelper | undefined;
+    letterMode: string | null | undefined;
 }>();
 
 const alphabet = useAlphabet();
@@ -304,6 +310,7 @@ async function handleCorrectLetter() {
         params: {
             locale: props.locale,
         },
+        query: router.currentRoute.value.query,
     });
 }
 

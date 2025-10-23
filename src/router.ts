@@ -13,6 +13,13 @@ export function createRouterInstance() {
                 path: "/",
                 name: "intro",
                 component: Intro,
+                props(route) {
+                    return {
+                        letterMode: route.query.letterMode as
+                            | string
+                            | undefined,
+                    };
+                },
             },
             {
                 path: "/:locale/:mode/start",
@@ -30,6 +37,7 @@ export function createRouterInstance() {
                                 from.params.letter as string | undefined,
                             ),
                         },
+                        query: to.query,
                     };
                 },
             },
@@ -49,6 +57,7 @@ export function createRouterInstance() {
                                 from.params.letter as string | undefined,
                             ),
                         },
+                        query: to.query,
                     };
                 },
             },
@@ -67,6 +76,9 @@ export function createRouterInstance() {
                         locale: route.params.locale,
                         mode: route.params.mode,
                         letter: route.params.letter,
+                        letterMode: route.query.letterMode as
+                            | string
+                            | undefined,
                     };
                 },
             },
