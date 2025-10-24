@@ -1,27 +1,28 @@
 :root {
     color-scheme: light dark;
 
+    --transition-duration: 400ms;
+
     /* light theme (default) */
-    --fg: #111827;
-    --bg: #ffffff;
-    --topbar-bg: #f3f4f6;
+    --fg: light-dark(#111827, #e5e7eb);
+    --bg: light-dark(#ffffff, #0b1220);
+    --topbar-bg: light-dark(#f3f4f6, #4caf50);
     --topbar-fg: var(--fg);
-    --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-color: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        /* dark theme */
-        --fg: #e5e7eb;
-        --bg: #0b1220;
-        --topbar-bg: #4caf50;
-        --topbar-fg: var(--fg);
-        --shadow-color: rgba(255, 255, 255, 0.1);
-    }
+html[data-theme="dark"] {
+    color-scheme: dark !important;
+}
+
+html[data-theme="light"] {
+    color-scheme: light !important;
 }
 
 body {
     margin: 0;
+    transition: background-color var(--transition-duration) ease;
+    background: light-dark(var(--bg), var(--bg));
 }
 
 #app {
