@@ -19,7 +19,7 @@
         </label>
         <RouterLink
             custom
-            :to="{ name: 'intro', query: $route.query }"
+            :to="{ name: 'intro', query: exitQuery($route.query) }"
             class="back-button"
             v-slot="{ href, navigate, isActive }"
         >
@@ -179,4 +179,14 @@ const darkMode = computed({
         colorScheme.colorScheme = value ? "dark" : "light";
     },
 });
+
+function exitQuery(query: Record<string, string | string[] | undefined>) {
+    const newQuery: Record<string, string | string[] | undefined> = {
+        ...query,
+    };
+    delete newQuery.letterMode;
+    delete newQuery.currentIndex;
+    delete newQuery.customWord;
+    return newQuery;
+}
 </script>
