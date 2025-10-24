@@ -26,6 +26,10 @@ const i18n = createI18n({
                 exitGame: "Exit game",
                 startRandom: "Random",
                 startAlphabetical: "Alphabetic",
+                startCustom: "Custom",
+            },
+            prompts: {
+                enterCustomWord: "Enter your custom word:",
             },
         },
         da: {
@@ -36,6 +40,10 @@ const i18n = createI18n({
                 exitGame: "Afslut spil",
                 startRandom: "Tilfældig",
                 startAlphabetical: "Alfabetisk",
+                startCustom: "Tilpasset",
+            },
+            prompts: {
+                enterCustomWord: "Indtast dit ord:",
             },
         },
     },

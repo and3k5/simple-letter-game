@@ -68,6 +68,9 @@
                     >{{ $t("nav.startAlphabetical") }}</a
                 >
             </RouterLink>
+            <a href="javascript:void(0)" class="btn" @click="startCustom()">{{
+                $t("nav.startCustom")
+            }}</a>
         </div>
     </div>
 </template>
@@ -90,7 +93,7 @@
     border: none;
     background: #00ff00;
     color: #000;
-    border-radius: 50px;
+    border-radius: 25px;
     cursor: pointer;
     text-decoration: none;
     text-align: center;
@@ -102,14 +105,15 @@
 }
 
 .start-buttons-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     gap: 15px;
 }
 
 .settings-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
+    flex-direction: row;
     gap: 15px;
     justify-items: center;
 }
@@ -117,7 +121,7 @@
 .settings-row .btn {
     padding: 20px;
     font-size: 4vmin;
-    width: min-content;
+    width: 100px;
     aspect-ratio: 1/1;
 }
 
@@ -131,6 +135,7 @@
 </style>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { RouterLink, useRouter } from "vue-router";
 
 defineProps<{
@@ -144,6 +149,23 @@ function setLetterMode(mode: string) {
         query: {
             ...router.currentRoute.value.query,
             letterMode: mode || undefined,
+        },
+    });
+}
+
+const i18n = useI18n();
+
+function startCustom() {
+    const word = prompt(i18n.t("prompts.enterCustomWord") as string);
+    if (!word) {
+        return;
+    }
+    router.push({
+        name: "start-game",
+        params: { locale: "da", mode: "word" },
+        query: {
+            ...router.currentRoute.value.query,
+            customWord: word,
         },
     });
 }

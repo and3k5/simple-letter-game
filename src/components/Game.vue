@@ -73,6 +73,7 @@ const props = defineProps<{
     letter: string;
     hook?: HookHelper | undefined;
     letterMode: string | null | undefined;
+    currentIndex?: number | undefined;
 }>();
 
 const alphabet = useAlphabet();
@@ -143,8 +144,8 @@ async function loadLetterSound(letter: LetterItem) {
 }
 
 watch(
-    () => props.letter,
-    async (letter) => {
+    () => ({ letter: props.letter, index: props.currentIndex }),
+    async ({ letter, index }) => {
         currentLetter.value = alphabet.getLetterItem(letter);
         try {
             const audio = await loadLetterSound(currentLetter.value);

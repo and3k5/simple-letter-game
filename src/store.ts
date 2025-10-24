@@ -7,7 +7,13 @@ import { ModeKey } from "./game-modes/ModeKey";
 import { ModeType } from "./game-modes/ModeType";
 import { createMode as createRandomMode } from "./game-modes/random";
 import { createMode as createAlphabeticalMode } from "./game-modes/alphabetical";
+import { createMode as createWordMode } from "./game-modes/word";
 import { Locale } from "./locales/Locale";
+import {
+    RouteLocationAsRelativeGeneric,
+    RouteLocationNormalizedLoadedGeneric,
+    RouteLocationRaw,
+} from "vue-router";
 
 export const useAlphabet = defineStore("alphabet", () => {
     const alphabetKey = ref<LocaleKey>();
@@ -27,6 +33,8 @@ export const useAlphabet = defineStore("alphabet", () => {
                 mode.value = createRandomMode();
             } else if (key === "alphabetical") {
                 mode.value = createAlphabeticalMode();
+            } else if (key === "word") {
+                mode.value = createWordMode();
             } else {
                 throw new Error("Unknown type: " + key);
             }
@@ -43,15 +51,15 @@ export const useAlphabet = defineStore("alphabet", () => {
             }
             return match;
         },
-        getNextLetter(
-            previousLetter: string | undefined,
-        ): LetterItem["letter"] {
+        patchRoute(
+            query: RouteLocationAsRelativeGeneric,
+            to: RouteLocationNormalizedLoadedGeneric,
+            from: RouteLocationNormalizedLoadedGeneric,
+        ) {
+            if (!mode.value) throw new Error("Mode is not loaded yet");
             if (!alphabet.value) throw new Error("Alphabet is not loaded yet");
-            const letterItem = mode.value.getNextLetterItem(
-                alphabet.value,
-                previousLetter,
-            );
-            return letterItem.letter;
+
+            return mode.value.patchQuery(query, to, from, alphabet.value);
         },
         containsLetter(letter: string) {
             return alphabet.value.letters.some(

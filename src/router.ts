@@ -1,4 +1,8 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import {
+    createRouter,
+    createWebHashHistory,
+    RouteLocationRaw,
+} from "vue-router";
 import Intro from "./components/Intro.vue";
 import Game from "./components/Game.vue";
 import { useAlphabet } from "./store";
@@ -28,17 +32,18 @@ export function createRouterInstance() {
                     const alphabet = useAlphabet();
                     alphabet.setAlphabet(to.params.locale as LocaleKey);
                     alphabet.setMode(to.params.mode as ModeKey);
-                    return {
-                        name: "game",
-                        params: {
-                            locale: to.params.locale,
-                            mode: to.params.mode,
-                            letter: alphabet.getNextLetter(
-                                from.params.letter as string | undefined,
-                            ),
+                    return alphabet.patchRoute(
+                        {
+                            name: "game",
+                            params: {
+                                locale: to.params.locale,
+                                mode: to.params.mode,
+                            },
+                            query: to.query,
                         },
-                        query: to.query,
-                    };
+                        to,
+                        from,
+                    );
                 },
             },
             {
@@ -48,17 +53,19 @@ export function createRouterInstance() {
                     const alphabet = useAlphabet();
                     alphabet.setAlphabet(to.params.locale as LocaleKey);
                     alphabet.setMode(to.params.mode as ModeKey);
-                    return {
-                        name: "game",
-                        params: {
-                            locale: to.params.locale,
-                            mode: to.params.mode,
-                            letter: alphabet.getNextLetter(
-                                from.params.letter as string | undefined,
-                            ),
+                    const route = alphabet.patchRoute(
+                        {
+                            name: "game",
+                            params: {
+                                locale: to.params.locale,
+                                mode: to.params.mode,
+                            },
+                            query: to.query,
                         },
-                        query: to.query,
-                    };
+                        to,
+                        from,
+                    );
+                    return route;
                 },
             },
             {
@@ -79,6 +86,9 @@ export function createRouterInstance() {
                         letterMode: route.query.letterMode as
                             | string
                             | undefined,
+                        currentIndex: route.query.currentIndex
+                            ? parseInt(route.query.currentIndex as string, 10)
+                            : undefined,
                     };
                 },
             },
