@@ -1,12 +1,14 @@
+@use "variables" as *;
+
 :root {
     color-scheme: light dark;
 
     --transition-duration: 400ms;
 
     /* light theme (default) */
-    --fg: light-dark(#111827, #e5e7eb);
-    --bg: light-dark(#ffffff, #0b1220);
-    --topbar-bg: light-dark(#f3f4f6, #4caf50);
+    --fg: light-dark(#{$light-fg}, #{$dark-fg});
+    --bg: light-dark(#{$light-bg}, #{$dark-bg});
+    --topbar-bg: light-dark(#{$light-topbar-bg}, #{$dark-topbar-bg});
     --topbar-fg: var(--fg);
     --shadow-color: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 }

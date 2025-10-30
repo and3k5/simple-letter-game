@@ -92,7 +92,9 @@
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use "sass:color";
+
 #introContainer {
     display: grid;
     grid-template-rows: 1fr 1fr;
@@ -104,11 +106,14 @@
     padding: 15px;
 }
 
+$btn-color-light: #00ff00;
+$btn-color-dark: #00ff00;
+
 .btn {
     padding: 50px;
     font-size: 5vmin;
     border: none;
-    background: #00ff00;
+    background: light-dark($btn-color-light, $btn-color-dark);
     color: #000;
     border-radius: 25px;
     cursor: pointer;
@@ -162,7 +167,10 @@
 }
 
 .btn-merge-checkbox:not(:checked) + .btn {
-    background: #007700;
+    background: light-dark(
+        color.scale($btn-color-light, $lightness: 55%),
+        color.scale($btn-color-dark, $lightness: -55%)
+    );
 }
 </style>
 

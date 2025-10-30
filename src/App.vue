@@ -41,6 +41,9 @@
 </template>
 
 <style scoped lang="scss">
+@use "sass:color";
+@use "variables" as *;
+
 .nav-header {
     background-color: var(--topbar-bg);
     padding: 1rem;
@@ -73,7 +76,11 @@ h1 {
 }
 
 .back-button:hover {
-    background-color: #f0f0f0;
+    background-color: light-dark(
+        color.scale($light-fg, $lightness: 40%),
+        color.scale($dark-fg, $lightness: -20%)
+    );
+    color: #000;
 }
 
 #dark-mode-toggle {
