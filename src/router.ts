@@ -8,6 +8,7 @@ import Game from "./components/Game.vue";
 import { useAlphabet } from "./store";
 import { LocaleKey } from "./locales/LocaleKey";
 import { ModeKey } from "./game-modes/ModeKey";
+import { configurationFromRoute } from "./Configuration";
 
 export function createRouterInstance() {
     return createRouter({
@@ -19,9 +20,7 @@ export function createRouterInstance() {
                 component: Intro,
                 props(route) {
                     return {
-                        letterMode: route.query.letterMode as
-                            | string
-                            | undefined,
+                        ...configurationFromRoute(route),
                     };
                 },
             },
@@ -83,9 +82,7 @@ export function createRouterInstance() {
                         locale: route.params.locale,
                         mode: route.params.mode,
                         letter: route.params.letter,
-                        letterMode: route.query.letterMode as
-                            | string
-                            | undefined,
+                        ...configurationFromRoute(route),
                         currentIndex: route.query.currentIndex
                             ? parseInt(route.query.currentIndex as string, 10)
                             : undefined,

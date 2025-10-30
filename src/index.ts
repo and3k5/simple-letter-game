@@ -31,6 +31,9 @@ const i18n = createI18n({
             prompts: {
                 enterCustomWord: "Enter your custom word:",
             },
+            options: {
+                animations: "Animations",
+            },
         },
         da: {
             general: {
@@ -44,6 +47,9 @@ const i18n = createI18n({
             },
             prompts: {
                 enterCustomWord: "Indtast dit ord:",
+            },
+            options: {
+                animations: "Animationer",
             },
         },
     },

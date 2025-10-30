@@ -1,36 +1,53 @@
 <template>
     <div id="introContainer">
         <div class="settings-row">
+            <div class="row-item letter-col">
+                <input
+                    type="radio"
+                    name="letterMode"
+                    id="letterMode_off"
+                    class="btn-merge-checkbox"
+                    value=""
+                    :checked="letterMode == null || letterMode == ''"
+                    @change="setLetterMode('')"
+                />
+                <label class="btn" for="letterMode_off" tabindex="0">Aa</label>
+                <input
+                    type="radio"
+                    name="letterMode"
+                    id="letterMode_upper"
+                    class="btn-merge-checkbox"
+                    value="upper"
+                    :checked="letterMode == 'upper'"
+                    @change="setLetterMode('upper')"
+                />
+                <label class="btn" for="letterMode_upper" tabindex="0">A</label>
+                <input
+                    type="radio"
+                    name="letterMode"
+                    id="letterMode_lower"
+                    class="btn-merge-checkbox"
+                    value="lower"
+                    :checked="letterMode == 'lower'"
+                    @change="setLetterMode('lower')"
+                />
+                <label class="btn" for="letterMode_lower" tabindex="0">a</label>
+            </div>
+
             <input
-                type="radio"
-                name="letterMode"
-                id="letterMode_off"
+                type="checkbox"
+                id="animations"
                 class="btn-merge-checkbox"
-                value=""
-                :checked="letterMode == null || letterMode == ''"
-                @change="setLetterMode('')"
+                :checked="animations !== 'off'"
+                @change="setAnimations(animations !== 'off' ? 'off' : '')"
             />
-            <label class="btn" for="letterMode_off"> A a </label>
-            <input
-                type="radio"
-                name="letterMode"
-                id="letterMode_upper"
-                class="btn-merge-checkbox"
-                value="upper"
-                :checked="letterMode == 'upper'"
-                @change="setLetterMode('upper')"
-            />
-            <label class="btn" for="letterMode_upper"> A </label>
-            <input
-                type="radio"
-                name="letterMode"
-                id="letterMode_lower"
-                class="btn-merge-checkbox"
-                value="lower"
-                :checked="letterMode == 'lower'"
-                @change="setLetterMode('lower')"
-            />
-            <label class="btn" for="letterMode_lower"> a </label>
+            <label
+                class="row-item btn"
+                style="margin-left: auto"
+                for="animations"
+                tabindex="0"
+                >{{ $t("options.animations") }}</label
+            >
         </div>
 
         <div class="start-buttons-row">
@@ -102,6 +119,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    white-space: nowrap;
 }
 
 .start-buttons-row {
@@ -116,13 +134,27 @@
     flex-direction: row;
     gap: 15px;
     justify-items: center;
+    align-items: center;
+}
+
+.letter-col {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.settings-row > .row-item {
+    flex: 1;
+    padding: 20px;
+    font-size: 4vmin;
+    width: 120px;
 }
 
 .settings-row .btn {
+    flex: 1;
     padding: 20px;
     font-size: 4vmin;
-    width: 100px;
-    aspect-ratio: 1/1;
+    width: 120px;
 }
 
 .btn-merge-checkbox {
@@ -135,12 +167,11 @@
 </style>
 
 <script setup lang="ts">
+import { Configuration } from "@/Configuration";
 import { useI18n } from "vue-i18n";
 import { RouterLink, useRouter } from "vue-router";
 
-defineProps<{
-    letterMode: string | null | undefined;
-}>();
+defineProps<Configuration>();
 
 const router = useRouter();
 
@@ -149,6 +180,15 @@ function setLetterMode(mode: string) {
         query: {
             ...router.currentRoute.value.query,
             letterMode: mode || undefined,
+        },
+    });
+}
+
+function setAnimations(mode: string) {
+    router.replace({
+        query: {
+            ...router.currentRoute.value.query,
+            animations: mode || undefined,
         },
     });
 }

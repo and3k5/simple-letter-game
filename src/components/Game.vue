@@ -67,15 +67,17 @@ import {
 } from "../resources";
 import { confetti } from "@tsparticles/confetti";
 import { type HookHelper } from "@/utils/hook-helper";
+import { Configuration } from "@/Configuration";
 import { createExitGameRoute } from "@/navigation/exitGame";
 
-const props = defineProps<{
-    locale: LocaleKey;
-    letter: string;
-    hook?: HookHelper | undefined;
-    letterMode: string | null | undefined;
-    currentIndex?: number | undefined;
-}>();
+const props = defineProps<
+    {
+        locale: LocaleKey;
+        letter: string;
+        hook?: HookHelper | undefined;
+        currentIndex?: number | undefined;
+    } & Configuration
+>();
 
 const alphabet = useAlphabet();
 
@@ -202,110 +204,118 @@ async function playAndWait(audio: HTMLAudioElement) {
 async function handleCorrectLetter() {
     props.hook?.set("handle correct letter");
     emit("guessed-letter");
-    const waitPromise = playAndWait(correctAudio);
-    correctIndicator.value = true;
-    await waitPromise;
 
-    switch (fxState.counter++ % 3) {
-        case 0:
-            {
-                confetti({
-                    particleCount: 200,
-                    spread: 180,
-                    origin: { y: 0.6 },
-                });
+    if (props.animations !== "off") {
+        const waitPromise = playAndWait(correctAudio);
+        correctIndicator.value = true;
+        await waitPromise;
 
-                await playAndWait(partyAudio);
-                await playAndWait(noiceAudio);
-                await wait(500);
-            }
-            break;
-        case 1:
-            {
-                confetti({
-                    particleCount: 200,
-                    spread: 90,
-                    angle: 0,
-                    startVelocity: 105,
-                    origin: { x: 0 },
-                    shapes: ["emoji"],
-                    shapeOptions: {
-                        emoji: {
-                            value: ["💨", "💩", "🧻"],
-                        },
-                    },
-                });
-
-                await playAndWait(fartAudio);
-                await playAndWait(noiceAudio);
-                await wait(500);
-            }
-            break;
-        case 2:
-            {
-                const omnomAudio = createOmNomAudio();
-                if (!omnomAudio.paused) {
-                    omnomAudio.currentTime = 0;
-                } else {
-                    omnomAudio.play();
-                }
-
-                // Render alternating images across the screen of fxCanvas
-                const ctx = fxCanvas.value.getContext("2d");
-
-                const imagesWidth = Math.max(...images.map((x) => x.width));
-
-                const mostLeft = 0 - imagesWidth;
-                const mostRight = fxCanvas.value.width + 20;
-                let x = mostLeft;
-
-                const audioContext = new AudioContext();
-                const audioPanNode = audioContext.createStereoPanner();
-                const source =
-                    audioContext.createMediaElementSource(omnomAudio);
-                source.connect(audioPanNode);
-                audioPanNode.connect(audioContext.destination);
-                audioPanNode.pan.value = -1;
-
-                const ctrl = new AbortController();
-                const runPromise = new Promise<void>((resolve) => {
-                    ctrl.signal.addEventListener("abort", () => {
-                        resolve();
+        switch (fxState.counter++ % 3) {
+            case 0:
+                {
+                    confetti({
+                        particleCount: 200,
+                        spread: 180,
+                        origin: { y: 0.6 },
                     });
-                });
 
-                function drawImage(n: number) {
-                    const currentImageIndex =
-                        Math.ceil(n / 100) % images.length;
-                    if (!fxCanvas.value) {
-                        throw new Error("Could not draw on canvas");
-                    }
-                    ctx.clearRect(
-                        0,
-                        0,
-                        fxCanvas.value.width,
-                        fxCanvas.value.height,
-                    );
-                    const img = images[currentImageIndex];
-                    ctx.drawImage(img, x, fxCanvas.value.height - img.height);
-                    x += 15; // Move the image to the right
-                    const progress = (x - mostLeft) / (mostRight - mostLeft);
-                    audioPanNode.pan.value = progress * 2 - 1;
-                    if (x < mostRight) {
-                        requestAnimationFrame(drawImage);
-                    } else {
-                        omnomAudio.pause();
-                        ctrl.abort();
-                    }
+                    await playAndWait(partyAudio);
+                    await playAndWait(noiceAudio);
+                    await wait(500);
                 }
+                break;
+            case 1:
+                {
+                    confetti({
+                        particleCount: 200,
+                        spread: 90,
+                        angle: 0,
+                        startVelocity: 105,
+                        origin: { x: 0 },
+                        shapes: ["emoji"],
+                        shapeOptions: {
+                            emoji: {
+                                value: ["💨", "💩", "🧻"],
+                            },
+                        },
+                    });
 
-                requestAnimationFrame(drawImage);
-                await runPromise;
-            }
-            break;
+                    await playAndWait(fartAudio);
+                    await playAndWait(noiceAudio);
+                    await wait(500);
+                }
+                break;
+            case 2:
+                {
+                    const omnomAudio = createOmNomAudio();
+                    if (!omnomAudio.paused) {
+                        omnomAudio.currentTime = 0;
+                    } else {
+                        omnomAudio.play();
+                    }
+
+                    // Render alternating images across the screen of fxCanvas
+                    const ctx = fxCanvas.value.getContext("2d");
+
+                    const imagesWidth = Math.max(...images.map((x) => x.width));
+
+                    const mostLeft = 0 - imagesWidth;
+                    const mostRight = fxCanvas.value.width + 20;
+                    let x = mostLeft;
+
+                    const audioContext = new AudioContext();
+                    const audioPanNode = audioContext.createStereoPanner();
+                    const source =
+                        audioContext.createMediaElementSource(omnomAudio);
+                    source.connect(audioPanNode);
+                    audioPanNode.connect(audioContext.destination);
+                    audioPanNode.pan.value = -1;
+
+                    const ctrl = new AbortController();
+                    const runPromise = new Promise<void>((resolve) => {
+                        ctrl.signal.addEventListener("abort", () => {
+                            resolve();
+                        });
+                    });
+
+                    function drawImage(n: number) {
+                        const currentImageIndex =
+                            Math.ceil(n / 100) % images.length;
+                        if (!fxCanvas.value) {
+                            throw new Error("Could not draw on canvas");
+                        }
+                        ctx.clearRect(
+                            0,
+                            0,
+                            fxCanvas.value.width,
+                            fxCanvas.value.height,
+                        );
+                        const img = images[currentImageIndex];
+                        ctx.drawImage(
+                            img,
+                            x,
+                            fxCanvas.value.height - img.height,
+                        );
+                        x += 15; // Move the image to the right
+                        const progress =
+                            (x - mostLeft) / (mostRight - mostLeft);
+                        audioPanNode.pan.value = progress * 2 - 1;
+                        if (x < mostRight) {
+                            requestAnimationFrame(drawImage);
+                        } else {
+                            omnomAudio.pause();
+                            ctrl.abort();
+                        }
+                    }
+
+                    requestAnimationFrame(drawImage);
+                    await runPromise;
+                }
+                break;
+        }
+
+        correctIndicator.value = false;
     }
-
-    correctIndicator.value = false;
 
     await router.replace({
         name: "next",
