@@ -12,6 +12,9 @@
         <template v-if="letterMode != 'upper'">
             {{ letter?.toLowerCase() }}
         </template>
+        <div class="timing-row" v-if="timing != null">
+            {{ Math.round(timing) }} ms
+        </div>
     </div>
     <input
         type="text"
@@ -46,6 +49,12 @@
     right: 0;
     left: 0;
     pointer-events: none;
+}
+
+.timing-row {
+    position: absolute;
+    font-size: 14pt;
+    margin-top: 45vmin;
 }
 </style>
 
@@ -146,10 +155,13 @@ async function loadLetterSound(letter: LetterItem) {
     });
 }
 
+const startTime = ref<number>(performance.now());
+
 watch(
     () => ({ letter: props.letter, index: props.currentIndex }),
     async ({ letter, index }) => {
         currentLetter.value = alphabet.getLetterItem(letter);
+        startTime.value = performance.now();
         try {
             const audio = await loadLetterSound(currentLetter.value);
             audioFile.value = audio;
@@ -201,10 +213,30 @@ async function playAndWait(audio: HTMLAudioElement) {
     await wait(duration);
 }
 
+const timing = ref<number | undefined>(undefined);
+const timingClearTimeout = ref<number | undefined>();
+
 async function handleCorrectLetter() {
     props.hook?.set("handle correct letter");
     emit("guessed-letter");
+    const stamp = performance.now();
+    const time = stamp - startTime.value;
 
+    if (time < 2000) {
+        timing.value = time;
+        if (timingClearTimeout.value) {
+            clearTimeout(timingClearTimeout.value);
+        }
+        timingClearTimeout.value = setTimeout(
+            () => (timing.value = undefined),
+            5000,
+        );
+    } else {
+        if (timingClearTimeout.value) {
+            clearTimeout(timingClearTimeout.value);
+        }
+        timing.value = undefined;
+    }
     if (props.animations !== "off") {
         const waitPromise = playAndWait(correctAudio);
         correctIndicator.value = true;
