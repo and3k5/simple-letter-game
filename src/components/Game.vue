@@ -67,6 +67,7 @@ import {
 } from "../resources";
 import { confetti } from "@tsparticles/confetti";
 import { type HookHelper } from "@/utils/hook-helper";
+import { createExitGameRoute } from "@/navigation/exitGame";
 
 const props = defineProps<{
     locale: LocaleKey;
@@ -379,6 +380,8 @@ window.addEventListener(
             }
         } else if (ev.code === "Space") {
             repeatSound();
+        } else if (ev.code === "Escape") {
+            router.push(createExitGameRoute(router.currentRoute.value));
         }
     },
     {

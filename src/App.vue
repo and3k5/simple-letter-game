@@ -19,7 +19,7 @@
         </label>
         <RouterLink
             custom
-            :to="{ name: 'intro', query: exitQuery($route.query) }"
+            :to="createExitGameRoute($route)"
             class="back-button"
             v-slot="{ href, navigate, isActive }"
         >
@@ -168,6 +168,7 @@ h1 {
 import { RouterLink, RouterView, useRoute } from "vue-router";
 import { useColorScheme } from "./useColorScheme";
 import { computed } from "vue";
+import { createExitGameRoute } from "./navigation/exitGame";
 const route = useRoute();
 const colorScheme = useColorScheme();
 
@@ -179,14 +180,4 @@ const darkMode = computed({
         colorScheme.colorScheme = value ? "dark" : "light";
     },
 });
-
-function exitQuery(query: Record<string, string | string[] | undefined>) {
-    const newQuery: Record<string, string | string[] | undefined> = {
-        ...query,
-    };
-    delete newQuery.letterMode;
-    delete newQuery.currentIndex;
-    delete newQuery.customWord;
-    return newQuery;
-}
 </script>
