@@ -1,6 +1,16 @@
 <template>
     <header class="nav-header">
         <h1>{{ $t("general.title") }}</h1>
+
+        <label style="margin-left: auto; margin-right: 20px">
+            <input
+                type="checkbox"
+                id="sound-toggle"
+                :checked="volume.volume > 0.5"
+                @click="() => (volume.volume = volume.volume > 0.5 ? 0 : 1)"
+            />
+            Sound
+        </label>
         <input type="checkbox" id="dark-mode-toggle" v-model="darkMode" />
         <label class="visual-dark-mode-toggle" for="dark-mode-toggle">
             <span class="dot">
@@ -94,7 +104,6 @@ h1 {
     height: var(--dark-mode-toggle-height);
     visibility: hidden;
     position: relative;
-    margin-left: auto;
     margin-right: 15px;
 }
 
@@ -176,8 +185,10 @@ import { RouterLink, RouterView, useRoute } from "vue-router";
 import { useColorScheme } from "./useColorScheme";
 import { computed } from "vue";
 import { createExitGameRoute } from "./navigation/exitGame";
+import { useVolume } from "./store";
 const route = useRoute();
 const colorScheme = useColorScheme();
+const volume = useVolume();
 
 const darkMode = computed({
     get() {

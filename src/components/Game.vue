@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import { LetterItem } from "@/locales/LetterItem";
 import { LocaleKey } from "@/locales/LocaleKey";
-import { useAlphabet, useEffectState } from "@/store";
+import { useAlphabet, useEffectState, useVolume } from "@/store";
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import {
@@ -157,6 +157,17 @@ async function loadLetterSound(letter: LetterItem) {
 
 const startTime = ref<number>(performance.now());
 
+const volume = useVolume();
+
+watch(
+    () => volume.volume,
+    (newValue) => {
+        if (audioFile.value) {
+            audioFile.value.volume = newValue;
+        }
+    },
+);
+
 watch(
     () => ({ letter: props.letter, index: props.currentIndex }),
     async ({ letter, index }) => {
@@ -165,6 +176,7 @@ watch(
         try {
             const audio = await loadLetterSound(currentLetter.value);
             audioFile.value = audio;
+            audioFile.value.volume = volume.volume;
             await audio.play();
         } catch (e) {
             if (e instanceof Error && e.name === "NotAllowedError") {
@@ -204,6 +216,7 @@ const emit = defineEmits<{
 const fxState = useEffectState();
 
 async function playAndWait(audio: HTMLAudioElement) {
+    audio.volume = volume.volume;
     if (!audio.paused) {
         audio.currentTime = 0;
     } else {
@@ -280,6 +293,7 @@ async function handleCorrectLetter() {
             case 2:
                 {
                     const omnomAudio = createOmNomAudio();
+                    omnomAudio.volume = volume.volume;
                     if (!omnomAudio.paused) {
                         omnomAudio.currentTime = 0;
                     } else {
@@ -371,6 +385,7 @@ function repeatSound() {
 
 async function handleWrongLetter() {
     props.hook?.set("handle wrong letter");
+    wrongAudio.volume = volume.volume;
     if (!wrongAudio.paused) {
         wrongAudio.currentTime = 0;
     } else {

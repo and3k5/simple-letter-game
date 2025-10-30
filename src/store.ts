@@ -76,3 +76,28 @@ export const useEffectState = defineStore("effectState", () => {
         counter,
     };
 });
+
+function parseVolume(localStorageValue: string | null) {
+    if (localStorageValue != null) {
+        const floatValue = parseFloat(localStorageValue);
+        if (!isNaN(floatValue)) {
+            return floatValue;
+        }
+    }
+    return undefined;
+}
+
+export const useVolume = defineStore("volume", () => {
+    const volume = ref<number>(
+        parseVolume(localStorage.getItem("volume")) ?? 1,
+    );
+
+    window.addEventListener("storage", (ev) => {
+        if (ev.key === "volume") {
+            volume.value = parseVolume(ev.newValue) ?? 1;
+        }
+    });
+    return {
+        volume,
+    };
+});
