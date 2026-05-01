@@ -50,11 +50,16 @@
             >
         </div>
 
+        <select v-model="lang">
+            <option value="da">Danish</option>
+            <option value="en">English</option>
+        </select>
+
         <div class="start-buttons-row">
             <RouterLink
                 :to="{
                     name: 'start-game',
-                    params: { locale: 'da', mode: 'random' },
+                    params: { locale: lang, mode: 'random' },
                     query: $route.query,
                 }"
                 custom
@@ -71,7 +76,7 @@
             <RouterLink
                 :to="{
                     name: 'start-game',
-                    params: { locale: 'da', mode: 'alphabetical' },
+                    params: { locale: lang, mode: 'alphabetical' },
                     query: $route.query,
                 }"
                 custom
@@ -108,6 +113,11 @@
 
 $btn-color-light: #00ff00;
 $btn-color-dark: #00ff00;
+
+select {
+    font-size: 4vmin;
+    padding: 10px;
+}
 
 .btn {
     padding: 50px;
@@ -178,6 +188,7 @@ $btn-color-dark: #00ff00;
 import { Configuration } from "@/Configuration";
 import { useI18n } from "vue-i18n";
 import { RouterLink, useRouter } from "vue-router";
+import { ref } from "vue";
 
 defineProps<Configuration>();
 
@@ -203,6 +214,8 @@ function setAnimations(mode: string) {
 
 const i18n = useI18n();
 
+const lang = ref<"da" | "en">("da");
+
 function startCustom() {
     const word = prompt(i18n.t("prompts.enterCustomWord") as string);
     if (!word) {
@@ -210,7 +223,7 @@ function startCustom() {
     }
     router.push({
         name: "start-game",
-        params: { locale: "da", mode: "word" },
+        params: { locale: lang.value, mode: "word" },
         query: {
             ...router.currentRoute.value.query,
             customWord: word,
